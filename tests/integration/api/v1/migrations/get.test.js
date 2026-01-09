@@ -28,6 +28,14 @@ describe("Other methods /api/v1/migrations", () => {
       );
       expect(responseMigrations.status).toBe(405);
 
+      const responseMigrationsBody = await responseMigrations.json();
+      expect(responseMigrationsBody).toEqual({
+        name: "MethdoNotAllowedError",
+        message: "Método não permitido para este endpoint.",
+        action: "Verifique se o método HTTP é válido para este endpoint.",
+        status_code: 405,
+      });
+
       const response = await fetch("http://localhost:3000/api/v1/status");
       const responseBody = await response.json();
 
