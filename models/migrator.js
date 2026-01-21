@@ -1,6 +1,7 @@
 import migrationRunner from "node-pg-migrate";
 import { resolve } from "node:path";
 import database from "infra/database.js";
+import ServiceError from "infra/errors.js";
 
 const defaultMigrationOptions = {
   dir: resolve("infra", "migrations"),
@@ -22,6 +23,12 @@ async function migrationHandler(dryRun) {
     });
 
     return runnedMigrations;
+  } catch (error) {
+    const serviceErrorObject = new ServiceError({
+      cause: error,
+      message: "Database connection or migration error",
+    });
+    throw serviceErrorObject;
   } finally {
     await dbClient?.end();
   }
